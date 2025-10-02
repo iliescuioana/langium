@@ -1,4 +1,4 @@
-name: Generate NPM SBOM
+name: Generate SBOM
 
 on:
   push:
@@ -13,9 +13,7 @@ on:
         required: true
 
 env:
-  NODE_VERSION: "20.x"
   REGISTRY_URL: "https://registry.npmjs.org"
-  PRODUCT_PATH: "./"
   CDXGEN_VERSION: "11.7.0"
 
 permissions:
@@ -47,7 +45,7 @@ jobs:
       - name: Setup Node SDK
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: '.nvmrc'
           registry-url: ${{ env.REGISTRY_URL }}
 
       - name: Install dependencies
@@ -60,13 +58,13 @@ jobs:
 
       - name: Generate SBOM
         run: |
-          cdxgen -r -o ${{ env.PRODUCT_PATH }}bom.json --filter=examples
+          cdxgen -r -o bom.json --filter=examples
 
       - name: Upload SBOM as artifact
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: sbom
-          path: ${{ env.PRODUCT_PATH }}/bom.json
+          path: bom.json
 
   # store-sbom-data: # stores sbom and metadata in a predefined format for otterdog to pick up
   #   needs: ["generate-sbom"]
