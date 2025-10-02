@@ -1,8 +1,6 @@
 name: Generate SBOM
 
 on:
-  push:
-    branches: [sbom-wip]
   release:
     types: [published]
   workflow_dispatch:
@@ -62,12 +60,12 @@ jobs:
           name: sbom
           path: bom.json
 
-  # store-sbom-data: # stores sbom and metadata in a predefined format for otterdog to pick up
-  #   needs: ["generate-sbom"]
-  #   uses: eclipse-csi/workflows/.github/workflows/store-sbom-data.yml@main
-  #   with:
-  #     projectName: ""
-  #     projectVersion: ${{ needs.generate-sbom.outputs.project-version }}
-  #     bomArtifact: "sbom"
-  #     bomFilename: "bom.json"
-  #     parentProject: ""
+  store-sbom-data: # stores sbom and metadata in a predefined format for otterdog to pick up
+    needs: ["generate-sbom"]
+    uses: eclipse-csi/workflows/.github/workflows/store-sbom-data.yml@main
+    with:
+      projectName: "langium-workspaces"
+      projectVersion: ${{ needs.generate-sbom.outputs.project-version }}
+      bomArtifact: "sbom"
+      bomFilename: "bom.json"
+      parentProject: "9f4d61ec-852d-4270-b6f5-31c7ad58c1a4"
